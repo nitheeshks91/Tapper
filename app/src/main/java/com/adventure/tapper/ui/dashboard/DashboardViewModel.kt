@@ -12,6 +12,8 @@ class DashboardViewModel @Inject constructor() : ViewModel() {
     val showAccessibilityPermissionScreen = MutableLiveData(false)
     val showOverlayPermissionScreen = MutableLiveData(false)
     val showDashboardScreen = MutableLiveData(false)
+    //  <!-- Not using for time being-->
+    val showStartTapControllerServiceScreen = MutableLiveData(false)
 
     private val _dashboardEvent = SingleLiveEvent<DashboardEvent>()
     val dashboardEvent: SingleLiveEvent<DashboardEvent> = _dashboardEvent
@@ -28,15 +30,14 @@ class DashboardViewModel @Inject constructor() : ViewModel() {
         _dashboardEvent.postValue(DashboardEvent.OpenTapSettingsEvent)
     }
 
-    fun setTapPosition() {
-        _dashboardEvent.postValue(DashboardEvent.SetTapPositionEvent)
+    fun startTapService() {
+        _dashboardEvent.postValue(DashboardEvent.StartTapServiceEvent)
     }
-
 
     sealed class DashboardEvent {
         object OpenAccessibilitySettingsEvent : DashboardEvent()
         object RequestOverlayPermissionEvent : DashboardEvent()
         object OpenTapSettingsEvent : DashboardEvent()
-        object SetTapPositionEvent : DashboardEvent()
+        object StartTapServiceEvent : DashboardEvent()
     }
 }

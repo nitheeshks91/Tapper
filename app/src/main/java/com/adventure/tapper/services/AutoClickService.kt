@@ -28,6 +28,7 @@ class AutoClickService : AccessibilityService(),
     private var startDelay: Long = 1000
     private var continueAfterClicks: Boolean = false
     private var delayAfterClicks: Long = 1000 // Default delay after clicks
+    private var autoStopAfterTaps: Boolean = false
     private lateinit var sharedPreferences: SharedPreferences
 
     private val broadcastReceiver = object : BroadcastReceiver() {
@@ -41,7 +42,6 @@ class AutoClickService : AccessibilityService(),
 
     override fun onCreate() {
         super.onCreate()
-        Log.d("AutoClickService", "Service Created")
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         updatePreferences()
@@ -52,7 +52,6 @@ class AutoClickService : AccessibilityService(),
     }
 
     override fun onInterrupt() {
-        Log.d("AutoClickService", "Service Interrupted")
         // Handle service interruption
     }
 
@@ -62,17 +61,14 @@ class AutoClickService : AccessibilityService(),
             addAction(ACTION_START_AUTO_CLICKER)
             addAction(ACTION_STOP_AUTO_CLICKER)
         })
-
     }
 
     private fun startAutoClickerService() {
         Log.d("AutoClickService", "Service Connected")
-//        if (isAutoClickerEnabled) {
-        showToast("Starting in $startDelay ms")
+        showToast("Starting auto click")
         handler.postDelayed({
             startAutoClicker(clickX, clickY, clickInterval, numberOfClicks, continueAfterClicks)
         }, startDelay)
-//        }
     }
 
     private fun showToast(message: String) {
@@ -88,36 +84,44 @@ class AutoClickService : AccessibilityService(),
     ) {
         Log.d(
             "AutoClickService",
-            "Starting Auto Clicker at ($x, $y) every $interval ms for $clicks clicks, continue after: $continueAfter"
+            "Starting Auto Clicker at $x:$y every $interval ms for $clicks clicks, continue after: $continueAfter"
         )
         isAutoClickerEnabled = true
         currentClicks = 0
         handler.post(object : Runnable {
             override fun run() {
-                if (isAutoClickerEnabled && (continueAfter || currentClicks < clicks)) {
-                    performClick(x, y)
-                    currentClicks++
-                    handler.postDelayed(this, interval)
-                } else {
+                if (isAutoClickerEnabled /*&& (continueAfter || currentClicks < clicks)*/) {
+                    if (autoStopAfterTaps && currentClicks > clicks) {
+                        val intent = Intent(ACTION_RESET_TAP_CONTROL)
+                        sendBroadcast(intent)
+                    } else {
+                        performClick(x, y)
+                        currentClicks++
+                        handler.postDelayed(this, interval)
+                    }
+                }
+            // Not using for time being
+            /*else {
                     stopAutoClicker()
                     handler.postDelayed({ // Adding delay after clicks
                         if (isAutoClickerEnabled) {
                             startAutoClicker(x, y, interval, clicks, continueAfter)
                         }
                     }, delayAfterClicks)
-                }
+                }*/
             }
         })
     }
 
     private fun stopAutoClicker() {
         Log.d("AutoClickService", "Stopping Auto Clicker")
+        showToast("Stopped auto tap")
         isAutoClickerEnabled = false
         handler.removeCallbacksAndMessages(null)
     }
 
     private fun performClick(x: Float, y: Float) {
-        Log.d("AutoClickService", "Performing click at ($x, $y)")
+        Log.d("AutoClickService", "Performing click at $x:$y. Count : $currentClicks")
         val path = Path()
         path.moveTo(x, y)
         val gestureDescription = GestureDescription.Builder()
@@ -134,8 +138,6 @@ class AutoClickService : AccessibilityService(),
                 override fun onCompleted(gestureDescription: GestureDescription?) {
                     super.onCompleted(gestureDescription)
                     Log.d("AutoClickService", "Click completed at: ($x, $y)")
-
-                    showToast("Clicked at ($x, $y)")
                 }
 
                 override fun onCancelled(gestureDescription: GestureDescription?) {
@@ -164,14 +166,13 @@ class AutoClickService : AccessibilityService(),
         delayAfterClicks = sharedPreferences.getString("delay_after_clicks", "1000")?.toLong()
             ?: 1000 // Fetching delay after clicks
 
-        if (isAutoClickerEnabled) {
-            showToast("Settings updated. please start if job already running")
-            stopAutoClicker()
+        autoStopAfterTaps = sharedPreferences.getBoolean("auto_stop_after_taps", false)
 
-//            handler.postDelayed({
-//                startAutoClicker(clickX, clickY, clickInterval, numberOfClicks, continueAfterClicks)
-//            }, startDelay)
-        }
+        // Not using for time being
+//        if (isAutoClickerEnabled) {
+//            showToast("Settings updated. please start if job already running")
+//            stopAutoClicker()
+//        }
     }
 
     override fun onDestroy() {
@@ -184,5 +185,6 @@ class AutoClickService : AccessibilityService(),
     companion object {
         const val ACTION_START_AUTO_CLICKER = "com.adventure.tapper.START_AUTO_CLICKER"
         const val ACTION_STOP_AUTO_CLICKER = "com.adventure.tapper.STOP_AUTO_CLICKER"
+        const val ACTION_RESET_TAP_CONTROL = "com.adventure.tapper.RESET_TAP_CONTROL"
     }
 }

@@ -1,17 +1,16 @@
 package com.adventure.tapper.ui.dashboard
 
-import android.annotation.SuppressLint
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
+import android.content.ServiceConnection
 import android.net.Uri
 import android.os.Bundle
+import android.os.IBinder
 import android.provider.Settings
-import android.view.MotionEvent
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.preference.PreferenceManager
 import com.adventure.tapper.BR
 import com.adventure.tapper.R
 import com.adventure.tapper.databinding.ActivityDashboardBinding
@@ -26,11 +25,29 @@ import dagger.hilt.android.AndroidEntryPoint
 class DashboardActivity : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityDashboardBinding
-
     private val viewModel: DashboardViewModel by viewModels()
 
-    private lateinit var sharedPreferences: SharedPreferences
-    private var isRecording = false
+    private var myService: FloatingWidgetService? = null
+    private var isBound = false
+
+    private val connection = object : ServiceConnection {
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            val binder = service as FloatingWidgetService.LocalBinder
+            myService = binder.getService()
+            isBound = true
+            setupUi()
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            myService = null
+            isBound = false
+            setupUi()
+        }
+    }
+
+    private fun isTapControllerRunning(): Boolean {
+        return isBound && (myService?.isServiceRunning() ?: false)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,44 +57,10 @@ class DashboardActivity : AppCompatActivity() {
         viewBinding.setVariable(BR.viewModel, viewModel)
         viewBinding.executePendingBindings()
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-
         initObservers()
 
         setupUi()
     }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private fun startRecording() {
-        isRecording = true
-        viewBinding.overlayLayout.visibility = View.VISIBLE
-        viewBinding.overlayLayout.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                val x = event.x.toInt()
-                val y = event.y.toInt()
-                saveCoordinatesToPreferences(x, y)
-                viewBinding.overlayLayout.setOnTouchListener(null)
-                stopRecording()
-                return@setOnTouchListener true
-            }
-            return@setOnTouchListener false
-        }
-
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private fun stopRecording() {
-        isRecording = false
-        viewBinding.overlayLayout.visibility = View.GONE
-    }
-
-    private fun saveCoordinatesToPreferences(x: Int, y: Int) {
-        val editor = sharedPreferences.edit()
-        editor.putString("click_x", x.toString())
-        editor.putString("click_y", y.toString())
-        editor.apply()
-    }
-
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -85,12 +68,11 @@ class DashboardActivity : AppCompatActivity() {
         when (requestCode) {
             ACCESSIBILITY_PERMISSION_REQUEST, OVERLAY_PERMISSION_REQUEST -> setupUi()
         }
-
     }
 
     private fun startFloatingWidgetService() {
         val intent = Intent(this, FloatingWidgetService::class.java)
-        startService(intent)
+        bindService(intent, connection, Context.BIND_AUTO_CREATE)
     }
 
     private fun initObservers() {
@@ -99,7 +81,7 @@ class DashboardActivity : AppCompatActivity() {
                 DashboardViewModel.DashboardEvent.OpenAccessibilitySettingsEvent -> promptEnableAccessibilityService()
                 DashboardViewModel.DashboardEvent.RequestOverlayPermissionEvent -> requestOverlayPermission()
                 DashboardViewModel.DashboardEvent.OpenTapSettingsEvent -> openTapSettings()
-                DashboardViewModel.DashboardEvent.SetTapPositionEvent -> setTapPosition()
+                DashboardViewModel.DashboardEvent.StartTapServiceEvent -> startFloatingWidgetService()
             }
         }
     }
@@ -112,24 +94,15 @@ class DashboardActivity : AppCompatActivity() {
         viewModel.showOverlayPermissionScreen.value =
             hasAccessibilityServicePermission && hasOverlayPermission.not()
 
-        viewModel.showDashboardScreen.value =
-            hasAccessibilityServicePermission && hasOverlayPermission
 
-        if (hasAccessibilityServicePermission && hasOverlayPermission) {
+        val tapControllerRunning = isTapControllerRunning()
+        if (hasAccessibilityServicePermission && hasOverlayPermission && tapControllerRunning.not()) {
             startFloatingWidgetService()
+            return
         }
-    }
 
-    private fun setTapPosition() {
-        if (!isRecording) {
-            startRecording()
-        } else {
-            stopRecording()
-        }
-    }
-
-    private fun saveTapPosition() {
-
+        viewModel.showDashboardScreen.value =
+            hasAccessibilityServicePermission && hasOverlayPermission && tapControllerRunning
     }
 
     private fun openTapSettings() {
@@ -141,7 +114,6 @@ class DashboardActivity : AppCompatActivity() {
 
     private fun hasOverlayPermission(): Boolean {
         return Settings.canDrawOverlays(this)
-
     }
 
     private fun promptEnableAccessibilityService() {

@@ -11,13 +11,14 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
-        android:background="@color/colorSecondary"
+        android:background="@color/colorPrimary"
         android:elevation="6dp"
         app:contentPadding="4dp"
         app:shapeAppearanceOverlay="@style/circleImageView"
         app:srcCompat="@android:drawable/ic_media_play"
-        app:tint="@color/colorPrimary" />
+        app:tint="@color/colorSecondary" />
 
+    <!-- Not using for time being-->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/pauseButton"
         android:layout_width="40dp"
@@ -26,11 +27,13 @@
         android:layout_marginTop="16dp"
         android:background="@color/colorSecondary"
         android:elevation="6dp"
+        android:visibility="gone"
         app:contentPadding="4dp"
         app:shapeAppearanceOverlay="@style/circleImageView"
         app:srcCompat="@android:drawable/ic_media_pause"
         app:tint="@color/colorPrimary" />
 
+    <!-- Not using for time being-->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/stopButton"
         android:layout_width="40dp"
@@ -39,9 +42,24 @@
         android:layout_marginTop="16dp"
         android:background="@color/colorSecondary"
         android:elevation="6dp"
+        android:visibility="gone"
         app:contentPadding="6dp"
         app:shapeAppearanceOverlay="@style/circleImageView"
         app:srcCompat="@android:drawable/checkbox_off_background"
         app:tint="@color/colorPrimary" />
+
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/dragButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:background="@color/colorPrimary"
+        android:elevation="6dp"
+        app:contentPadding="6dp"
+        app:shapeAppearanceOverlay="@style/circleImageView"
+        app:srcCompat="@drawable/ic_drag"
+        app:tint="@color/colorSecondary" />
 
 </LinearLayout>

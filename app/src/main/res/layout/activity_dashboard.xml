@@ -16,7 +16,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorSecondary"
         android:fillViewport="true">
 
         <RelativeLayout
@@ -42,7 +42,7 @@
                         android:fontFamily="@font/din_pro_bold"
                         android:text="Hello, Tapper"
                         android:textAlignment="viewStart"
-                        android:textColor="@color/colorSecondary"
+                        android:textColor="@color/colorPrimary"
                         android:textSize="20sp"
                         app:layout_constraintEnd_toStartOf="@+id/settingsButton"
                         app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +52,7 @@
                         android:id="@+id/settingsButton"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:background="@color/colorSecondary"
+                        android:background="@color/colorPrimary"
                         android:elevation="6dp"
                         android:onClick="@{()->viewModel.openTapSettings()}"
                         app:contentPadding="4dp"
@@ -60,7 +60,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:shapeAppearanceOverlay="@style/circleImageView"
                         app:srcCompat="@drawable/ic_settings"
-                        app:tint="@color/colorPrimary" />
+                        app:tint="@color/colorSecondary" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -83,6 +83,16 @@
                     android:visibility="@{viewModel.showOverlayPermissionScreen ? View.VISIBLE : View.GONE}"
                     app:viewModel="@{viewModel}" />
 
+
+                <!-- Not using for time being-->
+                <include
+                    android:id="@+id/layoutTapController"
+                    layout="@layout/layout_start_tap_controller"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="24dp"
+                    android:visibility="@{viewModel.showStartTapControllerServiceScreen ? View.VISIBLE : View.GONE}"
+                    app:viewModel="@{viewModel}" />
 
                 <include
                     android:id="@+id/layoutDashboard"
