@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -19,104 +18,86 @@
         android:background="@color/colorSecondary"
         android:fillViewport="true">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/title"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="20dp">
+                    android:fontFamily="@font/din_pro_bold"
+                    android:text="Hello, Tapper"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toStartOf="@+id/settingsButton"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/title"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/din_pro_bold"
-                        android:text="Hello, Tapper"
-                        android:textAlignment="viewStart"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="20sp"
-                        app:layout_constraintEnd_toStartOf="@+id/settingsButton"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/settingsButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@color/colorPrimary"
+                    android:elevation="6dp"
+                    android:onClick="@{()->viewModel.openTapSettings()}"
+                    app:contentPadding="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:shapeAppearanceOverlay="@style/circleImageView"
+                    app:srcCompat="@drawable/ic_settings"
+                    app:tint="@color/colorSecondary" />
 
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/settingsButton"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@color/colorPrimary"
-                        android:elevation="6dp"
-                        android:onClick="@{()->viewModel.openTapSettings()}"
-                        app:contentPadding="4dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:shapeAppearanceOverlay="@style/circleImageView"
-                        app:srcCompat="@drawable/ic_settings"
-                        app:tint="@color/colorSecondary" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-                <include
-                    android:id="@+id/layoutAccessibilityPermission"
-                    layout="@layout/layout_accessibility_service_permission"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="24dp"
-                    android:visibility="@{viewModel.showAccessibilityPermissionScreen ? View.VISIBLE : View.GONE}"
-                    app:viewModel="@{viewModel}" />
-
-                <include
-                    android:id="@+id/layoutOverlayPermission"
-                    layout="@layout/layout_overlay_permission"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="24dp"
-                    android:visibility="@{viewModel.showOverlayPermissionScreen ? View.VISIBLE : View.GONE}"
-                    app:viewModel="@{viewModel}" />
-
-
-                <!-- Not using for time being-->
-                <include
-                    android:id="@+id/layoutTapController"
-                    layout="@layout/layout_start_tap_controller"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="24dp"
-                    android:visibility="@{viewModel.showStartTapControllerServiceScreen ? View.VISIBLE : View.GONE}"
-                    app:viewModel="@{viewModel}" />
-
-                <include
-                    android:id="@+id/layoutDashboard"
-                    layout="@layout/layout_dashboard"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="24dp"
-                    android:visibility="@{viewModel.showDashboardScreen ? View.VISIBLE : View.GONE}"
-                    app:viewModel="@{viewModel}" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/overlayLayout"
+            <include
+                android:id="@+id/layoutAccessibilityPermission"
+                layout="@layout/layout_accessibility_service_permission"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#B35A8B71"
-                android:clickable="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:orientation="vertical"
-                android:visibility="gone"
-                tools:visibility="visible" />
-        </RelativeLayout>
+                android:layout_height="wrap_content"
+                android:layout_margin="24dp"
+                android:visibility="@{viewModel.showAccessibilityPermissionScreen ? View.VISIBLE : View.GONE}"
+                app:viewModel="@{viewModel}" />
 
+            <include
+                android:id="@+id/layoutOverlayPermission"
+                layout="@layout/layout_overlay_permission"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="24dp"
+                android:visibility="@{viewModel.showOverlayPermissionScreen ? View.VISIBLE : View.GONE}"
+                app:viewModel="@{viewModel}" />
+
+
+            <!-- Not using for time being-->
+            <include
+                android:id="@+id/layoutTapController"
+                layout="@layout/layout_start_tap_controller"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="24dp"
+                android:visibility="@{viewModel.showStartTapControllerServiceScreen ? View.VISIBLE : View.GONE}"
+                app:viewModel="@{viewModel}" />
+
+            <include
+                android:id="@+id/layoutDashboard"
+                layout="@layout/layout_dashboard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="24dp"
+                android:visibility="@{viewModel.showDashboardScreen ? View.VISIBLE : View.GONE}"
+                app:viewModel="@{viewModel}" />
+
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </layout>

@@ -17,7 +17,6 @@
         android:layout_height="wrap_content"
         android:background="#F6F8F4"
         android:orientation="vertical"
-        android:visibility="@{viewModel.showAccessibilityPermissionScreen ? View.VISIBLE : View.GONE}"
         app:cardCornerRadius="8dp"
         app:contentPadding="16dp">
 
