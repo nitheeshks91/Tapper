@@ -1,0 +1,47 @@
+<!-- floating_widget_layout.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/startButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/colorSecondary"
+        android:elevation="6dp"
+        app:contentPadding="4dp"
+        app:shapeAppearanceOverlay="@style/circleImageView"
+        app:srcCompat="@android:drawable/ic_media_play"
+        app:tint="@color/colorPrimary" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/pauseButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:background="@color/colorSecondary"
+        android:elevation="6dp"
+        app:contentPadding="4dp"
+        app:shapeAppearanceOverlay="@style/circleImageView"
+        app:srcCompat="@android:drawable/ic_media_pause"
+        app:tint="@color/colorPrimary" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/stopButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:background="@color/colorSecondary"
+        android:elevation="6dp"
+        app:contentPadding="6dp"
+        app:shapeAppearanceOverlay="@style/circleImageView"
+        app:srcCompat="@android:drawable/checkbox_off_background"
+        app:tint="@color/colorPrimary" />
+
+</LinearLayout>

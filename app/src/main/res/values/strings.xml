@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Tapper</string>
+    <string name="accessibility_service_description">Tapper requires accessibility permission. Go to Settings > Accessibility and enable</string>
+</resources>

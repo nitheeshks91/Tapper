@@ -1,0 +1,60 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Auto Clicker Settings">
+
+        <SwitchPreferenceCompat
+            android:key="enable_auto_clicker"
+            android:summary="Toggle the auto clicker on or off"
+            android:title="Enable Auto Clicker" />
+
+        <EditTextPreference
+            android:defaultValue="1000"
+            android:inputType="number"
+            android:key="click_interval"
+            android:summary="Interval between clicks in milliseconds"
+            android:title="Click Interval" />
+
+        <EditTextPreference
+            android:defaultValue="500"
+            android:inputType="number"
+            android:key="click_x"
+            android:summary="X coordinate for the click"
+            android:title="Click X Coordinate" />
+
+        <EditTextPreference
+            android:defaultValue="500"
+            android:inputType="number"
+            android:key="click_y"
+            android:summary="Y coordinate for the click"
+            android:title="Click Y Coordinate" />
+
+        <EditTextPreference
+            android:defaultValue="10"
+            android:inputType="number"
+            android:key="number_of_clicks"
+            android:summary="Number of times the auto clicker will click"
+            android:title="Number of Clicks" />
+
+        <EditTextPreference
+            android:defaultValue="1000"
+            android:inputType="number"
+            android:key="start_delay"
+            android:summary="Delay before the auto clicker starts (in milliseconds)"
+            android:title="Start Delay" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="continue_after_clicks"
+            android:summary="Continue clicking indefinitely after reaching the specified number of clicks"
+            android:title="Continue After Number of Clicks" />
+
+        <EditTextPreference
+            android:defaultValue="5000"
+            android:inputType="number"
+            android:key="delay_after_clicks"
+            android:summary="Delay after the auto clicker completes the specified number of clicks (in milliseconds)"
+            android:title="Delay After Clicks" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
