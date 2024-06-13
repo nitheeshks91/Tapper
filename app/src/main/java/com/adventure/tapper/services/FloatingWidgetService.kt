@@ -71,12 +71,17 @@ class FloatingWidgetService : Service(),
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
         super.onCreate()
-        registerReceiver(broadcastReceiver, IntentFilter().apply {
-            addAction(AutoClickService.ACTION_RESET_TAP_CONTROL)
-        })
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            registerReceiver(broadcastReceiver, IntentFilter().apply {
+                addAction(AutoClickService.ACTION_RESET_TAP_CONTROL)
+            }, RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(broadcastReceiver, IntentFilter().apply {
+                addAction(AutoClickService.ACTION_RESET_TAP_CONTROL)
+            })
+        }
 
         isServiceStarted = true
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)

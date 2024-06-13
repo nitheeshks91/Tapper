@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.graphics.Path
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -57,10 +58,17 @@ class AutoClickService : AccessibilityService(),
 
     override fun onServiceConnected() {
         super.onServiceConnected()
-        registerReceiver(broadcastReceiver, IntentFilter().apply {
-            addAction(ACTION_START_AUTO_CLICKER)
-            addAction(ACTION_STOP_AUTO_CLICKER)
-        })
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            registerReceiver(broadcastReceiver, IntentFilter().apply {
+                addAction(ACTION_START_AUTO_CLICKER)
+                addAction(ACTION_STOP_AUTO_CLICKER)
+            }, RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(broadcastReceiver, IntentFilter().apply {
+                addAction(ACTION_START_AUTO_CLICKER)
+                addAction(ACTION_STOP_AUTO_CLICKER)
+            })
+        }
     }
 
     private fun startAutoClickerService() {
@@ -100,15 +108,15 @@ class AutoClickService : AccessibilityService(),
                         handler.postDelayed(this, interval)
                     }
                 }
-            // Not using for time being
-            /*else {
-                    stopAutoClicker()
-                    handler.postDelayed({ // Adding delay after clicks
-                        if (isAutoClickerEnabled) {
-                            startAutoClicker(x, y, interval, clicks, continueAfter)
-                        }
-                    }, delayAfterClicks)
-                }*/
+                // Not using for time being
+                /*else {
+                        stopAutoClicker()
+                        handler.postDelayed({ // Adding delay after clicks
+                            if (isAutoClickerEnabled) {
+                                startAutoClicker(x, y, interval, clicks, continueAfter)
+                            }
+                        }, delayAfterClicks)
+                    }*/
             }
         })
     }
